@@ -7,60 +7,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id           Int            @id @default(autoincrement())
-  title        String
-  content      String
-  published    Boolean        @default(false)
-  authorId     Int
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  postCategory PostCategory[]
-  author       User           @relation(fields: [authorId], references: [id])
+model Book {
+  bookId          String @id @default(uuid()) @db.Uuid
+  title           String
+  genre           String
+  publishedYear   Int
+  totalCopies     Int
+  availableCopies Int
 
-  @@map("posts")
+  borrowRecords BorrowRecord[]
 }
 
-model User {
-  id       Int      @id @default(autoincrement())
-  username String   @unique
-  email    String
-  role     UserRole @default(user)
-  age      Int      @default(0)
-  post     Post[]
-  profile  Profile?
+model Member {
+  memberId       String   @id @default(uuid()) @db.Uuid
+  name           String
+  email          String   @unique
+  phone          String
+  membershipDate DateTime
 
-  @@map("users")
+  borrowRecords BorrowRecord[]
 }
 
-model Profile {
-  id     Int     @id @default(autoincrement())
-  bio    String?
-  userId Int     @unique
-  user   User    @relation(fields: [userId], references: [id])
+model BorrowRecord {
+  borrowId   String    @id @default(uuid()) @db.Uuid
+  borrowDate DateTime
+  returnDate DateTime?
 
-  @@map("profiles")
-}
+  bookId   String @db.Uuid
+  memberId String @db.Uuid
+  book     Book   @relation(fields: [bookId], references: [bookId])
+  member   Member @relation(fields: [memberId], references: [memberId])
 
-model Category {
-  id           Int            @id @default(autoincrement())
-  name         String
-  postCategory PostCategory[]
-
-  @@map("categories")
-}
-
-model PostCategory {
-  postId     Int
-  categoryId Int
-  category   Category @relation(fields: [categoryId], references: [id])
-  post       Post     @relation(fields: [postId], references: [id])
-
-  @@id([postId, categoryId])
-  @@map("post_category")
-}
-
-enum UserRole {
-  user
-  admin
+  @@index([bookId])
+  @@index([memberId])
 }
