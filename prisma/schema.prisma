@@ -35,8 +35,9 @@ model BorrowRecord {
 
   bookId   String @db.Uuid
   memberId String @db.Uuid
-  book     Book   @relation(fields: [bookId], references: [bookId])
-  member   Member @relation(fields: [memberId], references: [memberId])
+
+  book   Book   @relation(fields: [bookId], references: [bookId], onDelete: Cascade)
+  member Member @relation(fields: [memberId], references: [memberId], onDelete: Cascade)
 
   @@index([bookId])
   @@index([memberId])

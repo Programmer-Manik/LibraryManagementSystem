@@ -1,26 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the `books` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `borrow_records` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `members` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropForeignKey
-ALTER TABLE "borrow_records" DROP CONSTRAINT "borrow_records_bookId_fkey";
-
--- DropForeignKey
-ALTER TABLE "borrow_records" DROP CONSTRAINT "borrow_records_memberId_fkey";
-
--- DropTable
-DROP TABLE "books";
-
--- DropTable
-DROP TABLE "borrow_records";
-
--- DropTable
-DROP TABLE "members";
-
 -- CreateTable
 CREATE TABLE "Book" (
     "bookId" UUID NOT NULL,
