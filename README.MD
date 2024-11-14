@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Library Management System (Backend)
 
 This is a backend API for a Library Management System that helps manage books, members, borrowing activities, and overdue book tracking. It provides a set of RESTful API endpoints for library staff and members to interact with the system.
