@@ -1,44 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
 }
-
+        
 model Book {
-  bookId          String @id @default(uuid()) @db.Uuid
+  bookId          String         @id @default(uuid())
   title           String
   genre           String
   publishedYear   Int
   totalCopies     Int
   availableCopies Int
+  borrowRecord    BorrowRecord[]
 
-  borrowRecords BorrowRecord[]
+  @@map("books")
 }
 
 model Member {
-  memberId       String   @id @default(uuid()) @db.Uuid
+  memberId       String         @id @default(uuid())
   name           String
-  email          String   @unique
+  email          String         @unique
   phone          String
-  membershipDate DateTime
+  membershipDate DateTime       @default(now())
+  borrowRecord   BorrowRecord[]
 
-  borrowRecords BorrowRecord[]
+  @@map("members")
 }
 
 model BorrowRecord {
-  borrowId   String    @id @default(uuid()) @db.Uuid
-  borrowDate DateTime
+  borrowId   String    @id @default(uuid())
+  borrowDate DateTime  @default(now())
   returnDate DateTime?
-
-  bookId   String @db.Uuid
-  memberId String @db.Uuid
-
-  book   Book   @relation(fields: [bookId], references: [bookId], onDelete: Cascade)
-  member Member @relation(fields: [memberId], references: [memberId], onDelete: Cascade)
-
-  @@index([bookId])
-  @@index([memberId])
+  bookId     String
+  book       Book      @relation(fields: [bookId], references: [bookId])
+  memberId   String
+  member     Member    @relation(fields: [memberId], references: [memberId])
 }

@@ -2,59 +2,65 @@ import { Book, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const createBook = async (data: Book) => {
-  const newBook = await prisma.book.create({
-    data: {
-      title: data.title,
-      genre: data.genre,
-      publishedYear: data.publishedYear,
-      totalCopies: data.totalCopies,
-      availableCopies: data.availableCopies,
+const getAllBook = async () => {
+  const result = await prisma.book.findMany();
+  return result;
+};
+
+const creteBook = async (data: Book) => {
+  const result = await prisma.book.create({ data });
+  return result;
+};
+
+const getSingleBook = async (bookId: string) => {
+  const result = await prisma.book.findUniqueOrThrow({
+    where: {
+      bookId,
     },
   });
 
-  return newBook;
+  return result;
 };
 
-const getAllBooks = async () => {
-  const books = await prisma.book.findMany();
-  return books;
-};
-
-const getBookById = async (bookId: string) => {
-  const book = await prisma.book.findUnique({
-    where: { bookId },
-  });
-  return book;
-};
-
-const updateBook = async (bookId: string, data: Partial<Book>) => {
-  const updatedBook = await prisma.book.update({
-    where: { bookId },
-    data: {
-      title: data.title,
-      genre: data.genre,
-      publishedYear: data.publishedYear,
-      totalCopies: data.totalCopies,
-      availableCopies: data.availableCopies,
+const updateBook = async (
+  bookId: string,
+  data: Partial<Book>
+): Promise<Book> => {
+ await prisma.book.findUniqueOrThrow({
+    where: {
+      bookId,
     },
   });
 
-  return updatedBook;
-};
-
-const deleteBook = async (bookId: string) => {
-  const deletedBook = await prisma.book.delete({
-    where: { bookId },
+  const result = await prisma.book.update({
+    where: {
+      bookId,
+    },
+    data,
   });
-
-  return deletedBook;
+  return result;
 };
 
-export const bookService = {
-  createBook,
-  getAllBooks,
-  getBookById,
+
+const deleteBook = async(bookId: string)=>{
+    const isExist = await prisma.book.findUniqueOrThrow({
+        where: {
+            bookId
+        }
+    })
+
+    const result = await prisma.book.delete({
+        where: {
+            bookId
+        }
+    })
+
+    return result
+}
+export const BookService = {
+  getAllBook,
+  creteBook,
+  getSingleBook,
   updateBook,
-  deleteBook,
+  deleteBook
 };

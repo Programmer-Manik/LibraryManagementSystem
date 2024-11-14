@@ -1,21 +1,10 @@
-import { RequestHandler } from "express";
-import catchAsync from "../../../utils/catchAsync";
-import sendResponse from "../../../utils/sendResponse";
-import { bookService } from "./book.service";
+import { Request, RequestHandler, Response } from "express";
+import catchAsync from "../../../shared/catchAsync";
+import { BookService } from "./book.service";
+import sendResponse from "../../../shared/sendResponse";
 
-const createBook: RequestHandler = catchAsync(async (req, res) => {
-  const result = await bookService.createBook(req.body);
-
-  sendResponse(res, {
-    success: true,
-    statusCode: 201,
-    message: "Book created successfully",
-    data: result,
-  });
-});
-
-const getAllBooks: RequestHandler = catchAsync(async (req, res) => {
-  const result = await bookService.getAllBooks();
+const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
+  const result = await BookService.getAllBook();
 
   sendResponse(res, {
     success: true,
@@ -25,8 +14,19 @@ const getAllBooks: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
-const getBookById: RequestHandler = catchAsync(async (req, res) => {
-  const result = await bookService.getBookById(req.params.bookId);
+const createBookToDB: RequestHandler = catchAsync(async (req, res) => {
+  const result = await BookService.creteBook(req.body);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: 201,
+    message: "Book created successfully",
+    data: result,
+  });
+});
+
+const getSingleBookFromDB: RequestHandler = catchAsync(async (req, res) => {
+  const result = await BookService.getSingleBook(req.params.bookId);
 
   sendResponse(res, {
     success: true,
@@ -36,8 +36,8 @@ const getBookById: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
-const updateBook: RequestHandler = catchAsync(async (req, res) => {
-  const result = await bookService.updateBook(req.params.bookId, req.body);
+const updateBookFromDB: RequestHandler = catchAsync(async (req, res) => {
+  const result = await BookService.updateBook(req.params.bookId, req.body);
 
   sendResponse(res, {
     success: true,
@@ -47,20 +47,21 @@ const updateBook: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
-const deleteBook: RequestHandler = catchAsync(async (req, res) => {
-  await bookService.deleteBook(req.params.bookId);
+const deleteBookFromDB: RequestHandler = catchAsync(async(req, res)=>{
+    const result = await BookService.deleteBook(req.params.bookId);
 
-  sendResponse(res, {
-    success: true,
-    statusCode: 200,
-    message: "Book successfully deleted",
-  });
-});
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Book successfully deleted",
+        data: null,
+      });
+})
 
 export const BookController = {
-  createBook,
-  getAllBooks,
-  getBookById,
-  updateBook,
-  deleteBook,
+  getAllFromDB,
+  createBookToDB,
+  getSingleBookFromDB,
+  updateBookFromDB,
+  deleteBookFromDB
 };

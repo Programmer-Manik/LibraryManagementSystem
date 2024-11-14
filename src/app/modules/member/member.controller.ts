@@ -1,69 +1,71 @@
 import { RequestHandler } from "express";
-import catchAsync from "../../../utils/catchAsync";
-import { memberService } from "./member.service";
-import sendResponse from "../../../utils/sendResponse";
+import catchAsync from "../../../shared/catchAsync";
+import { MemberService } from "./member.service";
+import sendResponse from "../../../shared/sendResponse";
 
-const createMember: RequestHandler = catchAsync(async (req, res) => {
-  const result = await memberService.createMember(req.body);
 
-  sendResponse(res, {
-    success: true,
-    statusCode: 201,
-    message: "Member created successfully",
-    data: result,
-  });
-});
+const getAllMemberFromDB: RequestHandler = catchAsync(async(req, res)=>{
 
-const getAllMembers: RequestHandler = catchAsync(async (req, res) => {
-  const result = await memberService.getAllMembers();
+    const result = await MemberService.getAllMember();
 
-  sendResponse(res, {
-    success: true,
-    statusCode: 200,
-    message: "Members retrieved successfully",
-    data: result,
-  });
-});
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Members retrieved successfully",
+        data: result,
+      });
+})
 
-const getMemberById: RequestHandler = catchAsync(async (req, res) => {
-  const result = await memberService.getMemberById(req.params.memberId);
+const createMemberToDB: RequestHandler = catchAsync(async(req, res)=>{
+    const result = await MemberService.createMember(req.body);
 
-  sendResponse(res, {
-    success: true,
-    statusCode: 200,
-    message: "Member retrieved successfully",
-    data: result,
-  });
-});
+    sendResponse(res, {
+        success: true,
+        statusCode: 201,
+        message: "Member created successfully",
+        data: result,
+      });
+})
 
-const updateMember: RequestHandler = catchAsync(async (req, res) => {
-  const result = await memberService.updateMember(
-    req.params.memberId,
-    req.body
-  );
+const getSingleMemberFromDB: RequestHandler = catchAsync(async(req, res)=>{
+    const result = await MemberService.getSingleMember(req.params.memberId);
 
-  sendResponse(res, {
-    success: true,
-    statusCode: 200,
-    message: "Member updated successfully",
-    data: result,
-  });
-});
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Member retrieved successfully",
+        data: result,
+      });
+})
 
-const deleteMember: RequestHandler = catchAsync(async (req, res) => {
-  const result = await memberService.deleteMember(req.params.memberId);
+const updateMemberFromDB: RequestHandler = catchAsync(async(req, res)=>{
+    const result = await MemberService.updateMember(req.params.memberId, req.body);
 
-  sendResponse(res, {
-    success: true,
-    statusCode: 200,
-    message: "Member successfully deleted",
-  });
-});
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Member updated successfully",
+        data: result,
+      });
+})
+
+
+const deleteMemberFromBD: RequestHandler = catchAsync(async(req, res)=>{
+    const result = await MemberService.deleteMember(req.params.memberId);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Member successfully deleted",
+        data: null,
+      });
+})
+
 
 export const MemberController = {
-  createMember,
-  getAllMembers,
-  getMemberById,
-  updateMember,
-  deleteMember,
-};
+    getAllMemberFromDB,
+    createMemberToDB,
+    getSingleMemberFromDB,
+    updateMemberFromDB,
+    deleteMemberFromBD
+}
